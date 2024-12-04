@@ -37,10 +37,11 @@ btn.addEventListener('click', (event) => {
     // Encontramos en objeto con score mas alto, es decir, con el sentimiento mas probable.
     // La ia esta entrenada para ciertas cosas y no el neutral le cuesta un poco
     // Con palabras funciona bien, con cadenas de string un poco peor
+    
 
     const mostLikely = data[0].reduce((prev, curr) => (curr.score > prev.score ? curr : prev));
     
-    // Traducimos la respuesta al español
+    // Convierto la respuesta al español
     let sentiment = mostLikely.label;
     if (sentiment === 'positive') {
       sentiment = 'Positivo';
