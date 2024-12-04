@@ -1,10 +1,10 @@
 'use strict';
 
-
-
 const sentence = document.querySelector('.sentence');
 const btn = document.querySelector('.btn');
 const result = document.querySelector('.result');
+
+const apiUrl = 'https://api-inference.huggingface.co/models/cardiffnlp/twitter-xlm-roberta-base-sentiment';
 
 btn.addEventListener('click', (event) => {
     event.preventDefault();
@@ -15,13 +15,7 @@ btn.addEventListener('click', (event) => {
     return;
   }
   
-  const apiUrl = 'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english';
   
-  
-  
-  
-
-
   // Metodo POST en el fetch por requerimiento de la api
   fetch(apiUrl, {
     method: 'POST',
@@ -39,9 +33,35 @@ btn.addEventListener('click', (event) => {
     return response.json();
   })
   .then(data => {
-    console.log(data);
-  })
+    
+    // Encontramos en objeto con score mas alto, es decir, con el sentimiento mas probable.
+    // La ia esta entrenada para ciertas cosas y no el neutral le cuesta un poco
+    // Con palabras funciona bien, con cadenas de string un poco peor
 
+    const mostLikely = data[0].reduce((prev, curr) => (curr.score > prev.score ? curr : prev));
+    
+    // Traducimos la respuesta al español
+    let sentiment = mostLikely.label;
+    if (sentiment === 'positive') {
+      sentiment = 'Positivo';
+  } else if (sentiment === 'negative') {
+      sentiment = 'Negativo';
+  } else if (sentiment === 'neutral') {
+      sentiment = 'Neutral';
+  }
+
+  if (mostLikely.score < 0.5) {  // Umbral ajustable
+    sentiment = 'Neutral';
+  }
+
+        
+    result.innerHTML = `Sentimiento: ${sentiment}`;
+
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    result.innerHTML = 'Hubo un error al analizar el sentimiento.';
+});
 
 
 });
