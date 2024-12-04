@@ -12,22 +12,27 @@ btn.addEventListener('click', (event) => {
     result.innerHTML = 'Escribe para el análisis por favor';
     return;
   }
-
-  const apiKey = 'bf1fe6c324d9d10b4062f3502a4285198e2d9724';
+  
+  const apiUrl = 'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english';
+  const apiKey = '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';
+  
+  
   
 
+
   // Metodo POST en el fetch por requerimiento de la api
-  fetch('https://api.nlpcloud.io/v1/distilbert-base-uncased-sentiment/sentiment', {
+  fetch(apiUrl, {
     method: 'POST',
     headers: {
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'Authorization': `Token ${apiKey}`
     },
-    body: JSON.stringify({text: senteceValue})
+    body: JSON.stringify({inputs: senteceValue}),
   })
   .then(response => {
     if(!response.ok){
         result.innerHTML = 'No se pudo realizar el análisis';
+        return;
     }
     return response.json();
   })
