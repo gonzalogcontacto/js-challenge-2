@@ -1,5 +1,7 @@
 'use strict';
 
+
+
 const sentence = document.querySelector('.sentence');
 const btn = document.querySelector('.btn');
 const result = document.querySelector('.result');
@@ -14,7 +16,7 @@ btn.addEventListener('click', (event) => {
   }
   
   const apiUrl = 'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english';
-  const apiKey = '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';
+  
   
   
   
@@ -24,7 +26,7 @@ btn.addEventListener('click', (event) => {
   fetch(apiUrl, {
     method: 'POST',
     headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${window.apiKey}`,
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({inputs: senteceValue}),
