@@ -3,9 +3,15 @@
 const sentence = document.querySelector(".sentence");
 const btn = document.querySelector(".btn");
 const result = document.querySelector(".result");
+const wordsInput = document.querySelector(".words");
+const btnWords = document.querySelector(".btn_words");
+const resultWords = document.querySelector(".result_words");
 
-const apiUrl =
-  "https://api-inference.huggingface.co/models/cardiffnlp/twitter-xlm-roberta-base-sentiment";
+const apiUrl = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-xlm-roberta-base-sentiment";
+
+const apiWordUrl = 'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english';
+  
+
 
 btn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -36,6 +42,8 @@ btn.addEventListener("click", (event) => {
       console.log(data);
       // Encontramos el objeto con score mas alto, es decir, con el sentimiento mas probable y
       // reducimos con .reduce al sentimiento mas probable que es que tiene score mas alto.
+      // .reduce compara elemento actual con anterior y lo reduce a uno segun la condicion  
+      // que le demos.
 
       const mostLikely = data[0].reduce((prev, curr) =>
         curr.score > prev.score ? curr : prev
@@ -53,9 +61,53 @@ btn.addEventListener("click", (event) => {
 
       result.innerHTML = `Sentimiento: ${sentiment}`;
     })
-    
+
     .catch((error) => {
       console.error("Error:", error);
       result.innerHTML = "Hubo un error al analizar el sentimiento.";
     });
+});
+
+
+// Segundo input
+
+btnWords.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  const wordsValue = wordsInput.value.trim();
+  if (!wordsValue) {
+    resultWords.innerHTML = "Escribe tus pensamientos por favor";
+    return;
+  }
+
+  const words = wordsValue.split(' '); // Dividimos las palabras en un array
+  let positiveCount = 0;
+  let negativeCount = 0;
+  let neutralCount = 0;
+
+  words.map((word) => {
+    fetch(apiWordUrl, {
+      method: 'POST', 
+      headers: {
+        Authorization: `Bearer ${window.apiKey}`,
+        'Content-Type': 'application/json', 
+      },
+      body: JSON.stringify({ inputs: word }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          resultWords.innerHTML = "Error en el análisis";
+          return;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        const bestAnswer = data[0].reduce((prev, curr) =>
+          curr.score > prev.score ? curr : prev
+        );
+        
+      })
+  })
+
 });
