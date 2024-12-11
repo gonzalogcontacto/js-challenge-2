@@ -76,7 +76,7 @@ btnWords.addEventListener('click', (event) => {
 
   const wordsValue = wordsInput.value.trim();
   if (!wordsValue) {
-    resultWords.innerHTML = "Escribe tus pensamientos por favor";
+    resultWords.innerHTML = "Please write your thoughts";
     return;
   }
 
@@ -84,6 +84,7 @@ btnWords.addEventListener('click', (event) => {
   let positiveCount = 0;
   let negativeCount = 0;
   let neutralCount = 0;
+  
 
   words.map((word) => {
     fetch(apiWordUrl, {
@@ -96,18 +97,50 @@ btnWords.addEventListener('click', (event) => {
     })
       .then((response) => {
         if (!response.ok) {
-          resultWords.innerHTML = "Error en el análisis";
+          resultWords.innerHTML = "Error in the analysis";
           return;
         }
         return response.json();
       })
       .then((data) => {
-        console.log(data);
+        console.log(`Datos para la palabra:`, data);
+        console.log(`Palabra:`, word);
+
         const bestAnswer = data[0].reduce((prev, curr) =>
           curr.score > prev.score ? curr : prev
         );
-        
+        console.log(`Mejor respuesta:`, bestAnswer);
+        console.log(`Mejor respuesta:`, bestAnswer.label);
+        if (bestAnswer.label === "POSITIVE") {
+          positiveCount++;
+        } else if (bestAnswer.label === "NEGATIVE") {
+          negativeCount++;
+        }
       })
-  })
+      .catch((error) => {
+        console.error("Error:", error);
+        resultWords.innerHTML = "There was an error in analyzing the sentiment";
+      })
+      .finally(() => {
+        neutralCount++;
+
+        if (neutralCount === words.length) {
+          let finalSentiment;
+          if (positiveCount > negativeCount) {
+            finalSentiment = "Positive";
+          } else if (negativeCount > positiveCount) {
+            finalSentiment = "Negative";
+          } else {
+            finalSentiment = "Neutral";
+          }
+
+          resultWords.innerHTML = `Sentiment based on words: ${finalSentiment}`;
+        }
+        
+
+
+        
+      });
+  });
 
 });
