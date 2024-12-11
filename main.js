@@ -101,14 +101,10 @@ btnWords.addEventListener("click", (event) => {
         return response.json();
       })
       .then((data) => {
-        console.log(`Datos para la palabra:`, data);
-        console.log(`Palabra:`, word);
-
         const bestAnswer = data[0].reduce((prev, curr) =>
           curr.score > prev.score ? curr : prev
         );
-        console.log(`Mejor respuesta:`, bestAnswer);
-        console.log(`Mejor respuesta:`, bestAnswer.label);
+        
         if (bestAnswer.label === "POSITIVE") {
           positiveCount++;
         } else if (bestAnswer.label === "NEGATIVE") {
