@@ -7,11 +7,11 @@ const wordsInput = document.querySelector(".words");
 const btnWords = document.querySelector(".btn_words");
 const resultWords = document.querySelector(".result_words");
 
-const apiUrl = "https://api-inference.huggingface.co/models/cardiffnlp/twitter-xlm-roberta-base-sentiment";
+const apiUrl =
+  "https://api-inference.huggingface.co/models/cardiffnlp/twitter-xlm-roberta-base-sentiment";
 
-const apiWordUrl = 'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english';
-  
-
+const apiWordUrl =
+  "https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english";
 
 btn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -42,7 +42,7 @@ btn.addEventListener("click", (event) => {
       console.log(data);
       // Encontramos el objeto con score mas alto, es decir, con el sentimiento mas probable y
       // reducimos con .reduce al sentimiento mas probable que es que tiene score mas alto.
-      // .reduce compara elemento actual con anterior y lo reduce a uno segun la condicion  
+      // .reduce compara elemento actual con anterior y lo reduce a uno segun la condicion
       // que le demos.
 
       const mostLikely = data[0].reduce((prev, curr) =>
@@ -57,7 +57,7 @@ btn.addEventListener("click", (event) => {
         sentiment = "Negativo";
       } else if (sentiment === "neutral") {
         sentiment = "Neutral";
-      };
+      }
 
       result.innerHTML = `Sentimiento: ${sentiment}`;
     })
@@ -68,10 +68,9 @@ btn.addEventListener("click", (event) => {
     });
 });
 
-
 // Segundo input
 
-btnWords.addEventListener('click', (event) => {
+btnWords.addEventListener("click", (event) => {
   event.preventDefault();
 
   const wordsValue = wordsInput.value.trim();
@@ -80,18 +79,17 @@ btnWords.addEventListener('click', (event) => {
     return;
   }
 
-  const words = wordsValue.split(' '); // Dividimos las palabras en un array
+  const words = wordsValue.split(" "); // Dividimos las palabras en un array
   let positiveCount = 0;
   let negativeCount = 0;
   let neutralCount = 0;
-  
 
   words.map((word) => {
     fetch(apiWordUrl, {
-      method: 'POST', 
+      method: "POST",
       headers: {
         Authorization: `Bearer ${window.apiKey}`,
-        'Content-Type': 'application/json', 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ inputs: word }),
     })
@@ -136,11 +134,6 @@ btnWords.addEventListener('click', (event) => {
 
           resultWords.innerHTML = `Sentiment based on words: ${finalSentiment}`;
         }
-        
-
-
-        
       });
   });
-
 });
