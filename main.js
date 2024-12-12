@@ -39,7 +39,6 @@ btn.addEventListener("click", (event) => {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       // Encontramos el objeto con score mas alto, es decir, con el sentimiento mas probable y
       // reducimos con .reduce al sentimiento mas probable que es que tiene score mas alto.
       // .reduce compara elemento actual con anterior y lo reduce a uno segun la condicion
@@ -82,10 +81,10 @@ btnWords.addEventListener("click", (event) => {
   const words = wordsValue.split(" "); // Dividimos las palabras en un array
   let positiveCount = 0;
   let negativeCount = 0;
-  let neutralCount = 0;
 
-  words.map((word) => {
-    fetch(apiWordUrl, {
+  const promises = words.map(async (word) => {
+    // Hacemos una llamada a la api por cada palabra dividido con split
+    return fetch(apiWordUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${window.apiKey}`,
@@ -101,12 +100,13 @@ btnWords.addEventListener("click", (event) => {
         return response.json();
       })
       .then((data) => {
+        // Utilizamos reduce para recoger el resultado deseado segun score
         const bestAnswer = data[0].reduce((prev, curr) =>
           curr.score > prev.score ? curr : prev
         );
-        
+
         if (bestAnswer.label === "POSITIVE") {
-          positiveCount++;
+          positiveCount++; // Llenamos positivo o negativo segun resultado
         } else if (bestAnswer.label === "NEGATIVE") {
           negativeCount++;
         }
@@ -114,22 +114,28 @@ btnWords.addEventListener("click", (event) => {
       .catch((error) => {
         console.error("Error:", error);
         resultWords.innerHTML = "There was an error in analyzing the sentiment";
-      })
-      .finally(() => {
-        neutralCount++;
-
-        if (neutralCount === words.length) {
-          let finalSentiment;
-          if (positiveCount > negativeCount) {
-            finalSentiment = "Positive";
-          } else if (negativeCount > positiveCount) {
-            finalSentiment = "Negative";
-          } else {
-            finalSentiment = "Neutral";
-          }
-
-          resultWords.innerHTML = `Sentiment based on words: ${finalSentiment}`;
-        }
       });
   });
+
+  // Utilizamos Promise.all para esperar a que todas las peticiones terminen
+  Promise.all(promises)
+    .then(() => {
+      console.log(`Positives: ${positiveCount}, Negatives: ${negativeCount}`);
+      let finalSentiment;
+
+      // Si el número de palabras positivas y negativas es igual, es "Neutral"
+      if (positiveCount === negativeCount) {
+        finalSentiment = "Neutral";
+      } else if (positiveCount > negativeCount) {
+        finalSentiment = "Positive";
+      } else {
+        finalSentiment = "Negative";
+      }
+
+      resultWords.innerHTML = `Sentiment based on words: ${finalSentiment}`;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      resultWords.innerHTML = "There was an error in analyzing the sentiment";
+    });
 });
