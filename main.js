@@ -16,8 +16,8 @@ const apiWordUrl =
 btn.addEventListener("click", (event) => {
   event.preventDefault();
   // Trim elimina los espacios por delante y por detras de la frase
-  const senteceValue = sentence.value.trim();
-  if (!senteceValue) {
+  const sentenceValue = sentence.value.trim();
+  if (!sentenceValue) {
     result.innerHTML = "Escribe para el análisis por favor";
     return;
   }
@@ -29,7 +29,7 @@ btn.addEventListener("click", (event) => {
       Authorization: `Bearer ${window.apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ inputs: senteceValue }),
+    body: JSON.stringify({ inputs: sentenceValue }),
   })
     .then((response) => {
       if (!response.ok) {
