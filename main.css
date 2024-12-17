@@ -1,0 +1,79 @@
+:root {
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  --primary-color: blueviolet;
+  --secondary-color: lightgray;
+  --button-color: #6200ea;
+  --button-hover: #3700b3;
+  --input-border: #ccc;
+  --input-focus: #6200ea;
+}
+
+.title {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.titleEnglish {
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.form {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  width: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 15px;
+}
+
+.label {
+  font-weight: bold;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.styleInput {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid var(--input-border);
+  border-radius: 5px;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.style:focus {
+  border-color: var(--input-focus);
+  outline: none;
+}
+
+.styleBtn {
+  background: var(--button-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.styleBtn:hover {
+  background-color: var(--button-hover);
+}
+
+.result,
+.result_words {
+  font-size: 18px;
+  color: var(--primary-color);
+  text-align: center;
+  margin-top: 10px;
+}
